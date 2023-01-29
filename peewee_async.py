@@ -699,14 +699,18 @@ async def raw_query(query):
     return result
 
 
-async def prefetch(sq, *subqueries):
+async def prefetch(sq, *subqueries, **kwargs):
     """Asynchronous version of the `prefetch()` from peewee.
     """
     if not subqueries:
         result = await execute(sq)
         return result
 
-    fixed_queries = peewee.prefetch_add_subquery(sq, subqueries)
+    prefetch_type = kwargs.pop('prefetch_type', peewee.PREFETCH_TYPE.WHERE)
+    if kwargs:
+        raise ValueError('Unrecognized arguments: %s' % kwargs)
+
+    fixed_queries = peewee.prefetch_add_subquery(sq, subqueries, prefetch_type)
     deps = {}
     rel_map = {}
 
