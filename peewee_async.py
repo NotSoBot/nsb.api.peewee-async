@@ -271,14 +271,14 @@ class Manager:
         query = self._swap_database(query)
         return (await execute(query))
 
-    async def prefetch(self, query, *subqueries):
+    async def prefetch(self, query, *subqueries, **kwargs):
         """Asynchronous version of the `prefetch()` from peewee.
 
         :return: Query that has already cached data for subqueries
         """
         query = self._swap_database(query)
         subqueries = map(self._swap_database, subqueries)
-        return (await prefetch(query, *subqueries))
+        return (await prefetch(query, *subqueries, **kwargs))
 
     async def count(self, query, clear_limit=False):
         """Perform *COUNT* aggregated query asynchronously.
